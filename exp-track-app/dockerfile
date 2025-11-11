@@ -1,0 +1,144 @@
+ # Build stage
+FROM maven:3.9-eclipse-temurin-17 AS build
+
+WORKDIR /build
+
+# Copy pom.xml and download dependencies (cached layer)
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy source code and build
+COPY src ./src
+RUN mvn clean package -DskipTests -B
+
+# List the built jar to verify
+RUN ls -la /build/target/
+
+# Runtime stage
+FROM eclipse-temurin:17-jre
+
+WORKDIR /app
+
+# Copy the built jar from build stage
+COPY --from=build /build/target/*.jar app.jar
+
+# Expose port
+EXPOSE 8080
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+########## FROM debian:bookworm-slim
+########## 
+########## # Set environment variables
+########## ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+########## ENV PATH="${JAVA_HOME}/bin:${PATH}"
+########## 
+########## # Install packages in one layer to reduce image size
+########## RUN apt-get update 
+########## RUN apt-get install -y build-essential
+########## RUN apt-get install -y openjdk-17-jdk
+########## RUN apt-get install -y maven
+########## RUN apt-get install -y curl
+########## RUN apt-get install -y wget
+########## RUN apt-get install -y git
+########## RUN apt-get install -y fish
+########## RUN apt-get install -y vim
+########## RUN rm -rf /var/lib/apt/lists/*
+########## RUN apt-get clean
+##########     
+########## # Verify installations
+########## RUN java -version && mvn -version
+########## 
+########## WORKDIR /workspace
+########## COPY . .
+########## 
+########## # Debug: List what was copied
+########## RUN ls -la
+########## 
+########## RUN mvn clean package -DskipTests
+########## CMD ["java", "-jar", "target/exp-track-app.jar"]
+########## 
+########## 
+########## # FROM debian:bookworm-slim
+########## # 
+########## # # Set environment variables
+########## # ENV DEBIAN_FRONTEND=noninteractive
+########## # 
+########## # # Update package list and install essential tools
+########## # RUN apt-get update
+########## # RUN apt-get install -y build-essential
+########## # RUN apt-get install -y git
+########## # RUN apt-get install -y curl
+########## # RUN apt-get install -y wget
+########## # RUN apt-get install -y vim
+########## # RUN apt-get install -y nano
+########## # RUN apt-get install -y python3
+########## # RUN apt-get install -y python3-pip
+########## # RUN apt-get install -y nodejs
+########## # RUN apt-get install -y npm
+########## # RUN apt-get install -y maven
+########## # RUN apt-get install -y gradle
+########## # RUN apt-get install -y openjdk-21-jdk
+########## # RUN rm -rf /var/lib/apt/lists/*
+########## # 
+########## # # Set working directory
+########## # WORKDIR /workspace
+########## # 
+########## # # Add any custom configuration or scripts
+########## # COPY ./.devcontainer/setup.sh /tmp/setup.sh
+########## # RUN chmod +x /tmp/setup.sh && /tmp/setup.sh
+########## # 
+########## # 
+########## # # Setup PostgreSQL
+########## # RUN mkdir -p /var/run/postgresql && \
+########## #     chown -R postgres:postgres /var/run/postgresql
+########## # 
+########## # USER postgres
+########## # RUN initdb -D /var/lib/postgresql/data && \
+########## #     echo "host all  all    0.0.0.0/0  md5" >> /var/lib/postgresql/data/pg_hba.conf && \
+########## #     echo "listen_addresses='*'" >> /var/lib/postgresql/data/postgresql.conf
+########## # 
+########## # USER root
+########## # 
+########## # # Default command
+########## # CMD ["/bin/bash"]
+########## # 
+########## 
