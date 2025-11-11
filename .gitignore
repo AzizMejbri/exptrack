@@ -3,5 +3,5 @@
 exptrackapis/
 notes.md
 exp-track-app/run_db.sh
-exp-track-app/target/*
+exp-track-app/target
 access_db.sh
