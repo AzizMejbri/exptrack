@@ -15,38 +15,96 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
-import lombok.*;
-
-
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
+  @Column(name = "username", unique = true, nullable = false)
+  private String username;
 
-    @Column(name = "username", unique = true, nullable = false)
-    private String username;
+  @Column(name = "email", unique = true, nullable = false)
+  private String email;
 
-    @Column(name = "email", unique = true, nullable = false)
-    private String email;
+  @Column(name = "password", nullable = false)
+  private String password;
 
-    @Column(name = "password", nullable = false)
-    private String password;
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JsonIgnore
+  private List<Expense> expenses = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Expense> expenses = new ArrayList<>();
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JsonIgnore
+  private List<Revenue> revenues = new ArrayList<>();
 
+  public User(Long id, String username, String email, String password, List<Expense> expenses, List<Revenue> revenues) {
+    this.id = id;
+    this.username = username;
+    this.email = email;
+    this.password = password;
+    this.expenses = expenses;
+    this.revenues = revenues;
+  }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Revenue> revenues = new ArrayList<>();    
+  public User(Long id, String username, String email, String password) {
+    this.id = id;
+    this.username = username;
+    this.email = email;
+    this.password = password;
+  }
+
+  public User() {
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public List<Expense> getExpenses() {
+    return expenses;
+  }
+
+  public void setExpenses(List<Expense> expenses) {
+    this.expenses = expenses;
+  }
+
+  public List<Revenue> getRevenues() {
+    return revenues;
+  }
+
+  public void setRevenues(List<Revenue> revenues) {
+    this.revenues = revenues;
+  }
 
 }

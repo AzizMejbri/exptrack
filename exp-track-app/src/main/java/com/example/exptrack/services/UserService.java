@@ -1,6 +1,5 @@
 package com.example.exptrack.services;
 
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,28 +11,33 @@ import com.example.exptrack.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 
 @Service
-public class UserService{
-    
-    @Autowired
-    UserRepository userRep ;
+public class UserService {
 
-    @Transactional
-    public List<User> getUsers(){
-        return userRep.findAll();
-    }
+  @Autowired
+  UserRepository userRep;
 
-    @Transactional 
-    public User saveUser(User user){
-        return userRep.save(user);
-    }
+  @Transactional
+  public List<User> getUsers() {
+    return userRep.findAll();
+  }
 
-    @Transactional
-    public User findById(Long userId) { 
-        return userRep
-            .findById(userId)
-            .orElseThrow(() -> new RuntimeException("unkown user"));
-    }
+  @Transactional
+  public User saveUser(User user) {
+    return userRep.save(user);
+  }
+
+  @Transactional
+  public User findById(Long userId) {
+    return userRep
+        .findById(userId)
+        .orElseThrow(() -> new RuntimeException("unkown user"));
+  }
+
+  @Transactional
+  public User findByEmail(String email) {
+    return userRep
+        .findByEmail(email)
+        .orElseThrow(() -> new RuntimeException("unable to find a user by the given Email!"));
+  }
 
 }
-
-
