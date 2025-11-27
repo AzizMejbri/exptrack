@@ -6,7 +6,7 @@ import { Observable, BehaviorSubject, tap, catchError } from 'rxjs';
 export interface User {
   id: string;
   email: string;
-  name: string;
+  username: string;
 }
 
 export interface LoginCredentials {
@@ -15,7 +15,7 @@ export interface LoginCredentials {
 }
 
 export interface SignupCredentials {
-  name: string;
+  username: string;
   email: string;
   password: string;
 }
@@ -32,7 +32,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
 
-  private baseUrl = 'http://localhost:8080/api'; // Change to your API URL
+  private baseUrl = 'http://localhost:8080/auth';
   private loginUrl = `${this.baseUrl}/login`
   private signupUrl = `${this.baseUrl}/signup`
 
@@ -62,8 +62,11 @@ export class AuthService {
   }
 
   login(credentials: LoginCredentials): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.loginUrl}/login`, credentials).pipe(
-      tap(response => this.handleAuthSuccess(response)),
+    return this.http.post<AuthResponse>(`${this.loginUrl}`, credentials).pipe(
+      tap(response => {
+        this.handleAuthSuccess(response)
+        console.log(response)
+      }),
       catchError(error => {
         console.error('Login error:', error);
         throw error;
@@ -72,7 +75,7 @@ export class AuthService {
   }
 
   signup(credentials: SignupCredentials): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.signupUrl}/signup`, credentials).pipe(
+    return this.http.post<AuthResponse>(`${this.signupUrl}`, credentials).pipe(
       tap(response => this.handleAuthSuccess(response)),
       catchError(error => {
         console.error('Signup error:', error);

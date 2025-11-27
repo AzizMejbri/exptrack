@@ -3,6 +3,7 @@ package com.example.exptrack.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.exptrack.models.User;
@@ -15,6 +16,8 @@ public class UserService {
 
   @Autowired
   UserRepository userRep;
+  @Autowired
+  PasswordEncoder passwordEncoder;
 
   @Transactional
   public List<User> getUsers() {
@@ -23,6 +26,7 @@ public class UserService {
 
   @Transactional
   public User saveUser(User user) {
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
     return userRep.save(user);
   }
 
@@ -38,6 +42,11 @@ public class UserService {
     return userRep
         .findByEmail(email)
         .orElseThrow(() -> new RuntimeException("unable to find a user by the given Email!"));
+  }
+
+  @Transactional
+  public void deleteById(Long id) {
+    userRep.deleteById(id);
   }
 
 }

@@ -4,11 +4,13 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.exptrack.dtos.ExpenseRequest;
@@ -21,6 +23,7 @@ import com.example.exptrack.services.RevenueService;
 import com.example.exptrack.services.UserService;
 
 @RestController
+@RequestMapping("/api/public")
 public class ExpenseController {
 
   @GetMapping("/")
@@ -28,12 +31,12 @@ public class ExpenseController {
     return "Expense Tracker API is running!";
   }
 
-  @GetMapping("/api/expenses")
+  @GetMapping("/expenses")
   public String getExpenses() {
     return "<p>Expense list will be here</p>";
   }
 
-  @GetMapping("/api/health")
+  @GetMapping("/health")
   public String health() {
     return "API is healthy!";
   }
@@ -49,6 +52,13 @@ public class ExpenseController {
   @PostMapping("/test/users")
   public User postUser(@RequestBody User user) {
     return userService.saveUser(user);
+  }
+
+  @DeleteMapping("/test/users/{userId}")
+  public User deleteUser(@PathVariable Long userId) {
+    User user = userService.findById(userId);
+    userService.deleteById(userId);
+    return user;
   }
 
   @Autowired

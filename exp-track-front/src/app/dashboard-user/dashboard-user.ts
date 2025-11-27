@@ -1,0 +1,15 @@
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-dashboard-user',
+  imports: [],
+  templateUrl: './dashboard-user.html',
+  styleUrl: './dashboard-user.scss',
+})
+export class DashboardUserComponent {
+  user_id!: string;
+
+  ngOnInit() {
+
+  }
+}

@@ -3,6 +3,7 @@ package com.example.exptrack.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.exptrack.dtos.UserDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
@@ -56,6 +57,12 @@ public class User {
     this.password = password;
   }
 
+  public User(String email, String username, String password) {
+    this.email = email;
+    this.username = username;
+    this.password = password;
+  }
+
   public User() {
   }
 
@@ -105,6 +112,10 @@ public class User {
 
   public void setRevenues(List<Revenue> revenues) {
     this.revenues = revenues;
+  }
+
+  public UserDTO toDTO() {
+    return new UserDTO(this.id, this.username);
   }
 
 }

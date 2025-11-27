@@ -8,17 +8,17 @@
 
     <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="auth-form">
       <div class="form-group">
-        <label for="name">Full Name</label>
+        <label for="username">Userame</label>
         <input
           type="text"
-          id="name"
-          formControlName="name"
-          placeholder="Enter your full name"
-          [class.error]="name?.invalid && name?.touched"
+          id="username"
+          formControlName="username"
+          placeholder="Enter your uesrname"
+          [class.error]="username?.invalid && username?.touched"
         >
-        <div class="error-message" *ngIf="name?.invalid && name?.touched">
-          <span *ngIf="name?.errors?.['required']">Name is required</span>
-          <span *ngIf="name?.errors?.['minlength']">
+        <div class="error-message" *ngIf="username?.invalid && username?.touched">
+          <span *ngIf="username?.errors?.['required']">Name is required</span>
+          <span *ngIf="username?.errors?.['minlength']">
             Name must be at least 2 characters
           </span>
         </div>

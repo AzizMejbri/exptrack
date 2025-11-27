@@ -24,7 +24,7 @@ export class SignupComponent {
     private router: Router
   ) {
     this.signupForm = this.fb.group({
-      name: ['', [
+      username: ['', [
         Validators.required,
         Validators.minLength(2),
       ]],
@@ -59,11 +59,11 @@ export class SignupComponent {
       this.isLoading = true;
       this.errorMessage = '';
 
-      const { name, email, password } = this.signupForm.value;
+      const { username, email, password } = this.signupForm.value;
 
       this.authService
         .signup({
-          name: name,
+          username: username,
           email: email,
           password: password,
         }).subscribe({
@@ -79,8 +79,8 @@ export class SignupComponent {
     }
   }
 
-  get name() {
-    return this.signupForm.get('name');
+  get username() {
+    return this.signupForm.get('username');
   }
   get email() {
     return this.signupForm.get('email');
