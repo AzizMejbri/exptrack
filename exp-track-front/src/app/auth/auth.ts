@@ -5,7 +5,6 @@ import { Observable, BehaviorSubject, tap, catchError } from 'rxjs';
 
 export interface User {
   id: string;
-  email: string;
   username: string;
 }
 
@@ -21,7 +20,8 @@ export interface SignupCredentials {
 }
 
 export interface AuthResponse {
-  user: User;
+  username: string;
+  id: string;
   token: string;
 }
 
@@ -92,9 +92,10 @@ export class AuthService {
   }
 
   private handleAuthSuccess(response: AuthResponse): void {
+    const user: User = { id: response.id, username: response.username };
     localStorage.setItem('token', response.token);
-    localStorage.setItem('user', JSON.stringify(response.user));
-    this.currentUserSubject.next(response.user);
+    localStorage.setItem('user', JSON.stringify(user));
+    this.currentUserSubject.next(user);
     this.isAuthenticatedSubject.next(true);
   }
 

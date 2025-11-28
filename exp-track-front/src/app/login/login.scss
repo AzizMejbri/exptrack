@@ -6,6 +6,11 @@
   justify-content: center;
   background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
   padding: 20px;
+  transition: background 0.3s ease;
+
+  :host-context(.dark-theme) & {
+    background: linear-gradient(135deg, #065f46 0%, #1e40af 100%);
+  }
 }
 
 .auth-card {
@@ -16,6 +21,13 @@
   width: 100%;
   max-width: 400px;
   border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+
+  :host-context(.dark-theme) & {
+    background: #1f2937;
+    border-color: #374151;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
 }
 
 .auth-header {
