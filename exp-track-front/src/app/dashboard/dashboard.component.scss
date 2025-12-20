@@ -1,4 +1,3 @@
-// dashboard.component.scss - UPDATED FOR DARK MODE
 .dashboard-container {
   min-height: 100vh;
   background: #f8fafc;
@@ -74,16 +73,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 60px 20px;
+  padding: 100px 20px;
 
   .loading-spinner {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border: 4px solid #e5e7eb;
     border-top: 4px solid #3b82f6;
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 
     :host-context(.dark-theme) & {
       border-color: #374151;
@@ -99,6 +98,56 @@
     :host-context(.dark-theme) & {
       color: #9ca3af;
     }
+  }
+}
+
+.no-data-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 20px;
+  text-align: center;
+
+  .no-data-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    color: #111827;
+    margin: 0 0 12px 0;
+    font-size: 24px;
+    font-weight: 600;
+    transition: color 0.3s ease;
+
+    :host-context(.dark-theme) & {
+      color: #f9fafb;
+    }
+  }
+
+  p {
+    color: #6b7280;
+    font-size: 16px;
+    margin-bottom: 24px;
+    transition: color 0.3s ease;
+
+    :host-context(.dark-theme) & {
+      color: #9ca3af;
+    }
+  }
+}
+
+.no-data-message {
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+  padding: 20px;
+  font-size: 14px;
+  transition: color 0.3s ease;
+
+  :host-context(.dark-theme) & {
+    color: #9ca3af;
   }
 }
 
@@ -261,11 +310,6 @@
         color: #f9fafb;
       }
     }
-  }
-
-  .chart-wrapper {
-    height: 300px;
-    position: relative;
   }
 }
 
@@ -535,6 +579,11 @@
     border-radius: 8px;
     overflow: hidden;
     margin-bottom: 20px;
+    background: #e5e7eb; // Add background for contrast
+
+    :host-context(.dark-theme) & {
+      background: #374151;
+    }
 
     .chart-bar {
       display: flex;
@@ -542,6 +591,8 @@
       justify-content: center;
       transition: width 0.5s ease;
       position: relative;
+      height: 100%;
+      min-width: 1px; // Important for small percentages
 
       &.revenue-bar {
         background: linear-gradient(90deg, #10b981, #059669);
@@ -557,6 +608,9 @@
         font-size: 12px;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         white-space: nowrap;
+        padding: 0 8px;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
   }
@@ -592,5 +646,30 @@
         }
       }
     }
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 10px;
+  }
+
+  .dashboard-header {
+    padding: 16px;
+
+    .header-content {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+  }
+
+  .summary-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .charts-section {
+    gap: 16px;
   }
 }

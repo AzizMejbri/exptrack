@@ -1,4 +1,3 @@
-// sidebar.component.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
@@ -18,16 +17,21 @@ interface MenuItem {
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent {
+  userId = '1'; // For now, use a fixed user ID
+
   menuItems: MenuItem[] = [
-    { label: 'Dashboard', icon: '📊', route: '/dashboard/:user_id', isActive: false },
-    { label: 'Transactions', icon: '💳', route: '/transactions/:user_id', isActive: false },
-    { label: 'Category Stats', icon: '📈', route: '/category-stats/:user_id', isActive: false },
-    { label: 'Reports', icon: '📋', route: '/reports/:user_id', isActive: false },
-    { label: 'Settings', icon: '⚙️', route: '/settings/:user_id', isActive: false }
+    { label: 'Dashboard', icon: '📊', route: '/dashboard', isActive: false },
+    { label: 'Transactions', icon: '💳', route: '/transactions', isActive: false },
+    { label: 'Category Stats', icon: '📈', route: '/category-stats', isActive: false },
+    { label: 'Reports', icon: '📋', route: '/reports', isActive: false },
+    { label: 'Settings', icon: '⚙️', route: '/settings', isActive: false }
   ];
 
   constructor(private router: Router) {
     this.updateActiveState();
+    this.router.events.subscribe(() => {
+      this.updateActiveState();
+    });
   }
 
   navigateTo(route: string) {
@@ -37,7 +41,8 @@ export class SidebarComponent {
   private updateActiveState() {
     const currentRoute = this.router.url;
     this.menuItems.forEach(item => {
-      item.isActive = currentRoute === item.route;
+      item.isActive = currentRoute === item.route ||
+        currentRoute.startsWith(item.route + '/');
     });
   }
 }

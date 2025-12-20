@@ -34,15 +34,44 @@ public class LoginController {
       Authentication auth = authMan.authenticate(
           new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
       UserDetailsImpl user = (UserDetailsImpl) auth.getPrincipal();
-      String jwtToken = jwtService.generateToken(new UserDTO(user.getId(), user.getEmail()));
-      return ResponseEntity.ok(Map.of(
-          "token", jwtToken,
-          "id", user.getId(),
-          "username", user.getActualUsername()));
+      JwtService.TokenPair jwtTokens = jwtService.generateTokenPair(new UserDTO(user.getId(), user.getEmail()));
+      return ResponseEntity.ok(jwtTokens.toMap());
 
     } catch (Exception e) {
       e.printStackTrace();
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
     }
+  }
+
+  @PostMapping("/refresh")
+  public ResponseEntity<?> refresh(@RequestBody Map<String, String> request) {
+    String refreshToken = request.get("refreshToken");
+
+    try {
+      JwtService.TokenPair newTokens = jwtService.refreshTokenPair(refreshToken);
+      return ResponseEntity.ok(newTokens.toMap());
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.status(401).body(
+          Map.of("error", "Invalid refresh token"));
+    }
+  }
+
+  @PostMapping("/refresh-access")
+  public ResponseEntity<?> refreshAccessToken(@RequestBody Map<String, String> request) {
+    String accessToken = request.get("accessToken");
+    String refreshToken = request.get("refreshToken");
+
+    if (jwtService.canTokenBeRefreshed(accessToken, refreshToken)) {
+      try {
+        String newAccessToken = jwtService.refreshAccessToken(refreshToken);
+        return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
+      } catch (IllegalArgumentException e) {
+        return ResponseEntity.status(401).body(
+            Map.of("error", "Failed to refresh token"));
+      }
+    }
+
+    return ResponseEntity.status(401).body(
+        Map.of("error", "Cannot refresh token"));
   }
 }

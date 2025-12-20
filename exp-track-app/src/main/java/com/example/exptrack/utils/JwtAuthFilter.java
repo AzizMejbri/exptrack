@@ -46,7 +46,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     String token = authHeader.substring(7);
     Long userId = jwtService
-        .extractClaims(token)
+        .extractAllClaims(token)
         .get("id", Long.class);
     try {
       UserDTO user = userService.findById(userId).toDTO();

@@ -7,6 +7,8 @@ export interface Transaction {
   description: string;
   date: Date;
   userId: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface TransactionSummary {
@@ -14,6 +16,10 @@ export interface TransactionSummary {
   totalRevenue: number;
   netAmount: number;
   period: string;
+  currency?: string;
+  periodStart?: string;
+  periodEnd?: string;
+  transactionCount?: number;
 }
 
 export interface CategorySummary {
@@ -21,4 +27,6 @@ export interface CategorySummary {
   amount: number;
   type: 'expense' | 'revenue';
   percentage: number;
+  count?: number;
+  color?: string;
 }
