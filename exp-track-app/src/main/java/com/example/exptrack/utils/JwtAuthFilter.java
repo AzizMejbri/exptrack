@@ -1,6 +1,7 @@
 package com.example.exptrack.utils;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,46 +24,50 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
   @Autowired
   private JwtService jwtService;
+
   @Autowired
   private UserService userService;
 
-  @Override
-  protected void doFilterInternal(HttpServletRequest request,
-      HttpServletResponse response,
-      FilterChain filterChain)
-      throws ServletException, IOException {
+  @Autowired
+  private CookiesExtractor cookiesExtractor;
 
-    String authHeader = request.getHeader("Authorization");
+  @Override
+  protected void doFilterInternal(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      FilterChain filterChain) throws ServletException, IOException {
+
     String path = request.getServletPath();
 
+    // Public endpoints
     if (path.startsWith("/api/public") || path.startsWith("/auth")) {
       filterChain.doFilter(request, response);
       return;
     }
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-      filterChain.doFilter(request, response);
-      return;
-    }
 
-    String token = authHeader.substring(7);
-    Long userId = jwtService
-        .extractAllClaims(token)
-        .get("id", Long.class);
-    try {
-      UserDTO user = userService.findById(userId).toDTO();
+    // Extract access token from cookie
+    String token = cookiesExtractor.extractCookie(request, "access_token");
 
-      if (jwtService.isTokenValid(token, user)) {
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user, null, List.of());
-        SecurityContextHolder
-            .getContext()
-            .setAuthentication(auth);
+    if (token != null && jwtService.isAccessToken(token) && !jwtService.isTokenExpired(token)) {
+      try {
+        // Extract user from JWT
+        var userDTO = jwtService.extractUserDTO(token);
+
+        // Create authentication object
+        var authentication = new UsernamePasswordAuthenticationToken(
+            userDTO,
+            null,
+            Collections.emptyList());
+
+        // Set authentication in Spring Security context
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+      } catch (Exception e) {
+        logger.error("Cannot set user authentication: " + e.getMessage());
       }
-
-      filterChain.doFilter(request, response);
-
-    } catch (Exception e) {
-      System.err.println("\u001B[31mJwtAuthFilter: Internal Server Error\u001B[0m");
-      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
+
+    filterChain.doFilter(request, response);
   }
+
 }

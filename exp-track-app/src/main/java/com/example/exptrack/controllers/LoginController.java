@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +19,8 @@ import com.example.exptrack.dtos.UserDTO;
 import com.example.exptrack.security.UserDetailsImpl;
 import com.example.exptrack.services.JwtService;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/auth/login")
 public class LoginController {
@@ -27,15 +30,39 @@ public class LoginController {
   @Autowired
   private AuthenticationManager authMan;
 
+  private void addCookie(HttpServletResponse response,
+      String name,
+      String value,
+      long maxAgeSeconds) {
+
+    ResponseCookie cookie = ResponseCookie.from(name, value)
+        .httpOnly(true)
+        .secure(false) // required for SameSite=None
+        .sameSite("Lax")
+        .path("/")
+        .maxAge(maxAgeSeconds)
+        .build();
+
+    response.addHeader("Set-Cookie", cookie.toString());
+  }
+
   @PostMapping
-  public ResponseEntity<?> handleLogin(@RequestBody LoginRequest loginRequest) {
+  public ResponseEntity<?> handleLogin(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
     try {
 
       Authentication auth = authMan.authenticate(
           new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
       UserDetailsImpl user = (UserDetailsImpl) auth.getPrincipal();
       JwtService.TokenPair jwtTokens = jwtService.generateTokenPair(new UserDTO(user.getId(), user.getEmail()));
-      return ResponseEntity.ok(jwtTokens.toMap());
+
+      addCookie(response, "access_token",
+          jwtTokens.getAccessToken(),
+          jwtService.getMillisUntilExpiration(jwtTokens.getAccessToken()) / 1000);
+
+      addCookie(response, "refresh_token",
+          jwtTokens.getRefreshToken(),
+          jwtService.getMillisUntilExpiration(jwtTokens.getRefreshToken()) / 1000);
+      return ResponseEntity.ok(Map.of("id", user.getId(), "username", user.getUsername()));
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -44,11 +71,15 @@ public class LoginController {
   }
 
   @PostMapping("/refresh")
-  public ResponseEntity<?> refresh(@RequestBody Map<String, String> request) {
+  public ResponseEntity<?> refresh(@RequestBody Map<String, String> request, HttpServletResponse response) {
     String refreshToken = request.get("refreshToken");
 
     try {
       JwtService.TokenPair newTokens = jwtService.refreshTokenPair(refreshToken);
+
+      addCookie(response, "access_token",
+          newTokens.getAccessToken(),
+          jwtService.getMillisUntilExpiration(newTokens.getAccessToken()) / 1000);
       return ResponseEntity.ok(newTokens.toMap());
     } catch (IllegalArgumentException e) {
       return ResponseEntity.status(401).body(
