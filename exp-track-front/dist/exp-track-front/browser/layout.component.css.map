@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/layout/layout.component.scss"],
-  "sourcesContent": ["// layout.component.scss\n.app-layout {\n  min-height: 100vh;\n  background: #f8fafc;\n}\n\n.main-content {\n  margin-left: 250px; // Sidebar width\n  margin-top: 64px; // Header height\n  padding: 24px;\n  min-height: calc(100vh - 64px);\n}\n\n// Dark theme\n:host-context(.dark-theme) {\n  .app-layout {\n    background: #111827;\n  }\n}\n\n// Responsive design\n@media (max-width: 768px) {\n  .main-content {\n    margin-left: 0;\n    padding: 16px;\n  }\n}\n"],
-  "mappings": ";AACA,CAAA;AACE,cAAA;AACA,cAAA;;AAGF,CAAA;AACE,eAAA;AACA,cAAA;AACA,WAAA;AACA,cAAA,KAAA,MAAA,EAAA;;AAKA,cAAA,CAAA,YAAA,CAdF;AAeI,cAAA;;AAKJ,QAAA,WAAA;AACE,GAhBF;AAiBI,iBAAA;AACA,aAAA;;;",
-  "names": []
-}
