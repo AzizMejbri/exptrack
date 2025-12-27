@@ -37,8 +37,8 @@ public class LoginController {
 
     ResponseCookie cookie = ResponseCookie.from(name, value)
         .httpOnly(true)
-        .secure(false) // required for SameSite=None
-        .sameSite("Lax")
+        .secure(true) // required for SameSite=None
+        .sameSite("None")
         .path("/")
         .maxAge(maxAgeSeconds)
         .build();

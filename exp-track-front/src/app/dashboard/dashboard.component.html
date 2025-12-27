@@ -61,38 +61,16 @@
 
       <!-- Charts and Details -->
       <div class="charts-section">
-        <!-- Overview Chart -->
+        <!-- Pie Chart -->
         <div class="chart-container">
           <div class="chart-header">
             <h3>Income vs Expenses</h3>
           </div>
-          <div class="simple-chart">
-            <div class="chart-bars">
-              <!-- Revenue Bar -->
-              <div class="chart-bar revenue-bar" [style.width.%]="getChartWidth('revenue')">
-                <span class="bar-label" *ngIf="getChartWidth('revenue') > 5">
-                  Revenue: {{ formatCurrency(summary.totalRevenue) }}
-                </span>
-              </div>
-
-              <!-- Expense Bar -->
-              <div class="chart-bar expense-bar" [style.width.%]="getChartWidth('expenses')">
-                <span class="bar-label" *ngIf="getChartWidth('expenses') > 5">
-                  Expenses: {{ formatCurrency(summary.totalExpenses) }}
-                </span>
-              </div>
-            </div>
-
-            <div class="chart-legend">
-              <div class="legend-item">
-                <span class="legend-color revenue-color"></span>
-                <span>Revenue ({{ getChartWidth('revenue') | number:'1.1-1' }}%)</span>
-              </div>
-              <div class="legend-item">
-                <span class="legend-color expense-color"></span>
-                <span>Expenses ({{ getChartWidth('expenses') | number:'1.1-1' }}%)</span>
-              </div>
-            </div>
+          <div class="pie-chart-wrapper" *ngIf="summary.totalRevenue || summary.totalExpenses">
+            <canvas #pieChart></canvas>
+          </div>
+          <div *ngIf="!summary.totalRevenue && !summary.totalExpenses" class="no-data-message">
+            No data available for chart
           </div>
         </div>
 
@@ -138,7 +116,7 @@
       <div class="recent-transactions">
         <div class="section-header">
           <h3>Recent Transactions</h3>
-          <button class="btn-primary" routerLink="/transactions">View All</button>
+          <button class="btn-primary" (click)="showFullTransactions()">View All</button>
         </div>
         <div class="transactions-list">
           <div *ngFor="let transaction of transactions" class="transaction-item">

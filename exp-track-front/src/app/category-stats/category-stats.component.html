@@ -131,7 +131,7 @@
           <div *ngFor="let month of selectedCategory.monthlyData" class="month-bar">
             <div class="bar-label">{{ month.month }}</div>
             <div class="bar-container">
-              <div class="bar-fill" [style.height.%]="(month.amount / selectedCategory.totalAmount) * 100"></div>
+              <div class="bar-fill" [style.height.%]="getBarHeight(month.amount, selectedCategory.monthlyData)"></div>
             </div>
             <div class="bar-value">{{ formatCurrency(month.amount) }}</div>
           </div>
@@ -151,19 +151,21 @@
         <div class="chart-section">
           <h3>Expense Categories Distribution</h3>
           <div class="chart-container">
-            <div class="simple-pie-chart">
-              <div *ngFor="let category of stats.expenseCategories; let i = index"
-                   class="pie-slice"
-                   [style.transform]="'rotate(' + (i * 360 / stats.expenseCategories.length) + 'deg)'"
-                   [style.backgroundColor]="['#ef4444', '#dc2626', '#f97316', '#f59e0b'][i % 4]">
-                <div class="slice-percentage">{{ formatPercentage(category.percentage) }}</div>
-              </div>
-            </div>
+            <svg class="simple-pie-chart" viewBox="0 0 200 200">
+              <ng-container *ngFor="let category of stats.expenseCategories; let i = index">
+                <path
+                  [attr.d]="getPieSlicePath(category, stats.expenseCategories, i)"
+                  [attr.fill]="getCategoryColor(category.category)"
+                  [attr.stroke]="'var(--bg-secondary, white)'"
+                  [attr.stroke-width]="2"
+                />
+              </ng-container>
+            </svg>
             <div class="chart-legend">
               <div *ngFor="let category of stats.expenseCategories" class="legend-item">
                 <span class="legend-color" [style.backgroundColor]="getCategoryColor(category.category)"></span>
                 <span class="legend-label">{{ category.category }}</span>
-                <span class="legend-value">{{ formatCurrency(category.totalAmount) }}</span>
+                <span class="legend-value">{{ formatCurrency(category.totalAmount) }} ({{ formatPercentage(category.percentage) }})</span>
               </div>
             </div>
           </div>
@@ -172,19 +174,21 @@
         <div class="chart-section">
           <h3>Revenue Sources Distribution</h3>
           <div class="chart-container">
-            <div class="simple-pie-chart">
-              <div *ngFor="let category of stats.revenueCategories; let i = index"
-                   class="pie-slice"
-                   [style.transform]="'rotate(' + (i * 360 / stats.revenueCategories.length) + 'deg)'"
-                   [style.backgroundColor]="['#10b981', '#059669', '#0ea5e9', '#3b82f6'][i % 4]">
-                <div class="slice-percentage">{{ formatPercentage(category.percentage) }}</div>
-              </div>
-            </div>
+            <svg class="simple-pie-chart" viewBox="0 0 200 200">
+              <ng-container *ngFor="let category of stats.revenueCategories; let i = index">
+                <path
+                  [attr.d]="getPieSlicePath(category, stats.revenueCategories, i)"
+                  [attr.fill]="getCategoryColor(category.category)"
+                  [attr.stroke]="'var(--bg-secondary, white)'"
+                  [attr.stroke-width]="2"
+                />
+              </ng-container>
+            </svg>
             <div class="chart-legend">
               <div *ngFor="let category of stats.revenueCategories" class="legend-item">
                 <span class="legend-color" [style.backgroundColor]="getCategoryColor(category.category)"></span>
                 <span class="legend-label">{{ category.category }}</span>
-                <span class="legend-value">{{ formatCurrency(category.totalAmount) }}</span>
+                <span class="legend-value">{{ formatCurrency(category.totalAmount) }} ({{ formatPercentage(category.percentage) }})</span>
               </div>
             </div>
           </div>

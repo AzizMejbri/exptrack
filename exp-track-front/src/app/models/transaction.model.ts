@@ -5,21 +5,19 @@ export interface Transaction {
   type: 'expense' | 'revenue';
   category: string;
   description: string;
-  date: Date;
-  userId: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface TransactionSummary {
   totalExpenses: number;
   totalRevenue: number;
+  revenueCount: number;
+  expenseCount: number;
   netAmount: number;
   period: string;
   currency?: string;
-  periodStart?: string;
-  periodEnd?: string;
-  transactionCount?: number;
+
 }
 
 export interface CategorySummary {

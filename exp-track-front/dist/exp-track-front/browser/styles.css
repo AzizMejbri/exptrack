@@ -1,0 +1,150 @@
+/* src/styles.scss */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  background: #f8fafc;
+  color: #374151;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.dark-theme {
+  background: #111827;
+  color: #e5e7eb;
+}
+.dark-theme body {
+  background: #111827;
+  color: #e5e7eb;
+}
+.dark-theme {
+}
+.dark-theme input[type=date],
+.dark-theme input[type=time],
+.dark-theme input[type=datetime-local],
+.dark-theme input[type=month],
+.dark-theme input[type=week] {
+  background: #374151 !important;
+  border-color: #4b5563 !important;
+  color: #f9fafb !important;
+}
+.dark-theme input[type=date]::-webkit-calendar-picker-indicator,
+.dark-theme input[type=time]::-webkit-calendar-picker-indicator,
+.dark-theme input[type=datetime-local]::-webkit-calendar-picker-indicator,
+.dark-theme input[type=month]::-webkit-calendar-picker-indicator,
+.dark-theme input[type=week]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.8;
+}
+.dark-theme input[type=date]::-webkit-datetime-edit-fields-wrapper,
+.dark-theme input[type=time]::-webkit-datetime-edit-fields-wrapper,
+.dark-theme input[type=datetime-local]::-webkit-datetime-edit-fields-wrapper,
+.dark-theme input[type=month]::-webkit-datetime-edit-fields-wrapper,
+.dark-theme input[type=week]::-webkit-datetime-edit-fields-wrapper {
+  color: #f9fafb;
+}
+.dark-theme input[type=date]::-webkit-datetime-edit-text,
+.dark-theme input[type=time]::-webkit-datetime-edit-text,
+.dark-theme input[type=datetime-local]::-webkit-datetime-edit-text,
+.dark-theme input[type=month]::-webkit-datetime-edit-text,
+.dark-theme input[type=week]::-webkit-datetime-edit-text {
+  color: #f9fafb;
+}
+.dark-theme input[type=date]::-webkit-datetime-edit-month-field,
+.dark-theme input[type=date]::-webkit-datetime-edit-day-field,
+.dark-theme input[type=date]::-webkit-datetime-edit-year-field,
+.dark-theme input[type=time]::-webkit-datetime-edit-month-field,
+.dark-theme input[type=time]::-webkit-datetime-edit-day-field,
+.dark-theme input[type=time]::-webkit-datetime-edit-year-field,
+.dark-theme input[type=datetime-local]::-webkit-datetime-edit-month-field,
+.dark-theme input[type=datetime-local]::-webkit-datetime-edit-day-field,
+.dark-theme input[type=datetime-local]::-webkit-datetime-edit-year-field,
+.dark-theme input[type=month]::-webkit-datetime-edit-month-field,
+.dark-theme input[type=month]::-webkit-datetime-edit-day-field,
+.dark-theme input[type=month]::-webkit-datetime-edit-year-field,
+.dark-theme input[type=week]::-webkit-datetime-edit-month-field,
+.dark-theme input[type=week]::-webkit-datetime-edit-day-field,
+.dark-theme input[type=week]::-webkit-datetime-edit-year-field {
+  color: #f9fafb;
+}
+.dark-theme {
+}
+.dark-theme select {
+  background: #374151 !important;
+  border-color: #4b5563 !important;
+  color: #f9fafb !important;
+}
+.dark-theme select option {
+  background: #374151;
+  color: #f9fafb;
+}
+.dark-theme {
+}
+.dark-theme input[type=text],
+.dark-theme input[type=email],
+.dark-theme input[type=password],
+.dark-theme input[type=number],
+.dark-theme input[type=tel],
+.dark-theme textarea {
+  background: #374151 !important;
+  border-color: #4b5563 !important;
+  color: #f9fafb !important;
+}
+.dark-theme input[type=text]::placeholder,
+.dark-theme input[type=email]::placeholder,
+.dark-theme input[type=password]::placeholder,
+.dark-theme input[type=number]::placeholder,
+.dark-theme input[type=tel]::placeholder,
+.dark-theme textarea::placeholder {
+  color: #9ca3af !important;
+}
+* {
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+input[type=date] {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+input[type=date]:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+.dark-theme input[type=date] {
+  background: #374151 !important;
+  border-color: #4b5563 !important;
+  color: #f9fafb !important;
+}
+.dark-theme input[type=date]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.8;
+  cursor: pointer;
+}
+.dark-theme input[type=date]::-webkit-datetime-edit-fields-wrapper {
+  color: #f9fafb;
+}
+.dark-theme input[type=date]::-webkit-datetime-edit-text {
+  color: #f9fafb;
+}
+.dark-theme input[type=date]::-webkit-datetime-edit-month-field,
+.dark-theme input[type=date]::-webkit-datetime-edit-day-field,
+.dark-theme input[type=date]::-webkit-datetime-edit-year-field {
+  color: #f9fafb;
+  background: #374151;
+}
+
+/* angular:styles/global:styles */
+/*# sourceMappingURL=styles.css.map */

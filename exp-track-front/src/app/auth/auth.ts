@@ -1,11 +1,12 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject, tap, catchError } from 'rxjs';
+import { Observable, BehaviorSubject, tap, catchError, of } from 'rxjs';
 
 export interface User {
   id: string;
   username: string;
+  email: string;
 }
 
 export interface LoginCredentials {
@@ -19,100 +20,95 @@ export interface SignupCredentials {
   password: string;
 }
 
-export interface AuthResponse {
-  username: string;
-  id: string;
-  token: string;
-}
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-
-  private baseUrl = 'http://localhost:8080/auth';
-  private loginUrl = `${this.baseUrl}/login`
-  private signupUrl = `${this.baseUrl}/signup`
+  private baseUrl = 'https://localhost:8443';
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
-  public currentUser$ = this.currentUserSubject.asObservable();
+  currentUser$ = this.currentUserSubject.asObservable();
 
-  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
-  public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
-
-  constructor() {
-    this.loadUserFromStorage();
-  }
-
-  private loadUserFromStorage(): void {
-    const token = this.getToken();
-    const userStr = localStorage.getItem('user');
-
-    if (token && userStr) {
-      try {
-        const user = JSON.parse(userStr);
-        this.currentUserSubject.next(user);
-        this.isAuthenticatedSubject.next(true);
-      } catch (e) {
-        this.clearStorage();
-      }
-    }
-  }
-
-  login(credentials: LoginCredentials): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.loginUrl}`, credentials).pipe(
+  login(credentials: LoginCredentials): Observable<User> {
+    console.log("login Working");
+    return this.http.post<User>(
+      `${this.baseUrl}/auth/login`,
+      credentials,
+      { withCredentials: true }
+    ).pipe(
       tap(response => {
-        this.handleAuthSuccess(response)
-        console.log(response)
-      }),
-      catchError(error => {
-        console.error('Login error:', error);
-        throw error;
+        const user: User = {
+          id: response.id.toString(),
+          username: response.username,
+          email: response.email
+        };
+        console.log("Login successful, user:", user);
+        this.currentUserSubject.next(user);
+        localStorage.setItem('currentUser', JSON.stringify(user));
       })
     );
   }
 
-  signup(credentials: SignupCredentials): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.signupUrl}`, credentials).pipe(
-      tap(response => this.handleAuthSuccess(response)),
-      catchError(error => {
-        console.error('Signup error:', error);
-        throw error;
+  signup(credentials: SignupCredentials): Observable<User> {
+    return this.http.post<User>(
+      `${this.baseUrl}/auth/signup`,
+      credentials,
+      { withCredentials: true }
+    ).pipe(
+      tap(response => {
+        const user: User = {
+          id: response.id.toString(),
+          username: response.username,
+          email: response.email
+        };
+        console.log("Signup successful, user:", user);
+        this.currentUserSubject.next(user);
+        localStorage.setItem('currentUser', JSON.stringify(user));
+      })
+    );
+  }
+
+  // ADD THIS METHOD: Fetch current user from backend
+  fetchCurrentUser(): Observable<User> {
+    return this.http.get<User>(
+      `${this.baseUrl}/api/current-user`,
+      { withCredentials: true }
+    ).pipe(
+      tap(response => {
+        const user: User = {
+          id: response.id.toString(),
+          username: response.username,
+          email: response.email
+        };
+        console.log("Fetched current user:", user);
+        this.currentUserSubject.next(user);
+        localStorage.setItem('currentUser', JSON.stringify(user));
+      }),
+      catchError((error: HttpErrorResponse) => {
+        console.error('Failed to fetch current user:', error);
+        return of(null as any); // Return empty observable on error
       })
     );
   }
 
   logout(): void {
-    this.clearStorage();
-    this.currentUserSubject.next(null);
-    this.isAuthenticatedSubject.next(false);
-    this.router.navigate(['/login']);
-  }
-
-  private handleAuthSuccess(response: AuthResponse): void {
-    const user: User = { id: response.id, username: response.username };
-    localStorage.setItem('token', response.token);
-    localStorage.setItem('user', JSON.stringify(user));
-    this.currentUserSubject.next(user);
-    this.isAuthenticatedSubject.next(true);
-  }
-
-  private clearStorage(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem('token');
+    this.http.post(
+      `${this.baseUrl}/auth/logout`,
+      {},
+      { withCredentials: true }
+    ).subscribe(() => {
+      this.currentUserSubject.next(null);
+      localStorage.removeItem('currentUser');
+      this.router.navigate(['/login']);
+    });
   }
 
   getCurrentUser(): User | null {
-    return this.currentUserSubject.value;
+    const userStr = localStorage.getItem('currentUser');
+    return userStr ? JSON.parse(userStr) : null;
   }
 
   isAuthenticated(): boolean {
-    return this.isAuthenticatedSubject.value;
+    return this.getCurrentUser() !== null;
   }
 }

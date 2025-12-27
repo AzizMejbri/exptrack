@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TransactionService } from '../services/transaction.service';
 import { ThemeService } from '../theme.service';
@@ -11,6 +11,8 @@ import {
 } from '../models/transaction.model';
 import { Subscription, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import Chart from 'chart.js/auto';
+import { AuthService } from '../auth/auth';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,7 +21,9 @@ import { catchError } from 'rxjs/operators';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('pieChart', { static: false }) pieChartRef!: ElementRef;
+  private pieChart: Chart | null = null;
 
   timeFrames = [
     { value: 'month', label: 'This Month' },
@@ -35,30 +39,43 @@ export class DashboardComponent implements OnInit, OnDestroy {
   categorySummary: CategorySummary[] = [];
   isLoading = true;
   isDarkMode = false;
+  hasChartData = false;
+  isUsingMockData = false;
   private themeSubscription!: Subscription;
-
-  chartPercentage = {
-    expenses: 50,
-    revenue: 50
-  };
 
   constructor(
     private transactionService: TransactionService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private router: Router,
+    private authService: AuthService
   ) {
-    // Initialize summary with mock to guarantee template sees valid data
     this.summary = this.getMockSummary();
   }
 
   ngOnInit() {
+    // Debug logging
+    console.log('🏠 Dashboard initialized');
+    console.log('👤 Current User:', this.authService.getCurrentUser());
+
     this.themeSubscription = this.themeService.isDarkMode$.subscribe(
-      mode => this.isDarkMode = mode
+      (mode: boolean) => {
+        this.isDarkMode = mode;
+        this.updatePieChart();
+      }
     );
     this.loadDashboardData();
   }
 
+  ngAfterViewInit() {
+    // Wait a bit for view to render
+    setTimeout(() => {
+      this.updatePieChart();
+    }, 100);
+  }
+
   ngOnDestroy() {
     this.themeSubscription?.unsubscribe();
+    this.destroyChart();
   }
 
   onTimeFrameChange() {
@@ -66,70 +83,195 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   loadDashboardData() {
+    console.log('📊 Loading dashboard data...');
+    console.log('⏰ Selected timeframe:', this.selectedTimeFrame);
+
     this.isLoading = true;
+    this.hasChartData = false;
+    this.isUsingMockData = false;
     let loaded = 0;
+
     const finish = () => {
       loaded++;
-      if (loaded === 3) this.isLoading = false;
+      console.log(`✔️ Loaded ${loaded}/3 data sources`);
+      if (loaded === 3) {
+        this.isLoading = false;
+        console.log('✅ All data loaded!');
+        console.log('📈 Final transactions:', this.transactions);
+        console.log('💰 Final summary:', this.summary);
+        console.log('📂 Final categories:', this.categorySummary);
+        console.log('🎭 Using mock data:', this.isUsingMockData);
+        setTimeout(() => this.updatePieChart(), 50);
+      }
     };
 
     // Transactions
     this.transactionService.getTransactions(this.selectedTimeFrame, 5)
-      .pipe(catchError(() => of([])))
-      .subscribe(data => {
-        this.transactions = data && data.length ? data : this.getMockTransactions();
+      .pipe(catchError((error: any) => {
+        console.error('🔴 Transactions error:', error);
+        this.isUsingMockData = true;
+        return of([]);
+      }))
+      .subscribe((data: Transaction[]) => {
+        console.log('📥 Received transactions:', data);
+        console.log('📏 Data length:', data?.length);
+
+        if (!data || data.length === 0) {
+          console.log('⚠️ No transactions from backend, using mock data');
+          this.transactions = this.getMockTransactions();
+          this.isUsingMockData = true;
+        } else {
+          console.log('✅ Using real transactions from backend');
+          this.transactions = data;
+        }
+
         finish();
       });
 
     // Summary
     this.transactionService.getTransactionSummary(this.selectedTimeFrame)
-      .pipe(catchError(() => of(this.getMockSummary())))
-      .subscribe(summary => {
+      .pipe(catchError((error: any) => {
+        console.error('🔴 Summary error:', error);
+        this.isUsingMockData = true;
+        return of(this.getMockSummary());
+      }))
+      .subscribe((summary: TransactionSummary) => {
+        console.log('📥 Received summary:', summary);
+
         const expenses = Number(summary?.totalExpenses) || 0;
         const revenue = Number(summary?.totalRevenue) || 0;
-        // if zero totals, use mock
-        this.summary = (expenses === 0 && revenue === 0) ? this.getMockSummary() : summary;
-        this.updateChartData();
+
+        if (expenses === 0 && revenue === 0) {
+          console.log('⚠️ Empty summary from backend, using mock data');
+          this.summary = this.getMockSummary();
+          this.isUsingMockData = true;
+        } else {
+          console.log('✅ Using real summary from backend');
+          this.summary = summary;
+          this.hasChartData = true;
+        }
+
         finish();
       });
 
     // Categories
     this.transactionService.getCategorySummary(this.selectedTimeFrame)
-      .pipe(catchError(() => of(this.getMockCategories())))
-      .subscribe(data => {
-        this.categorySummary = data && data.length ? data : this.getMockCategories();
+      .pipe(catchError((error: any) => {
+        console.error('🔴 Categories error:', error);
+        this.isUsingMockData = true;
+        return of(this.getMockCategories());
+      }))
+      .subscribe((data: CategorySummary[]) => {
+        console.log('📥 Received categories:', data);
+
+        if (!data || data.length === 0) {
+          console.log('⚠️ No categories from backend, using mock data');
+          this.categorySummary = this.getMockCategories();
+          this.isUsingMockData = true;
+        } else {
+          console.log('✅ Using real categories from backend');
+          this.categorySummary = data;
+        }
+
         finish();
       });
   }
 
-  updateChartData() {
-    const expenses = Number(this.summary.totalExpenses) || 0;
-    const revenue = Number(this.summary.totalRevenue) || 0;
-    const total = expenses + revenue;
+  destroyChart() {
+    if (this.pieChart) {
+      this.pieChart.destroy();
+      this.pieChart = null;
+    }
+  }
 
-    if (total <= 0) {
-      this.chartPercentage = { expenses: 50, revenue: 50 };
+  updatePieChart() {
+    // Destroy existing chart
+    this.destroyChart();
+
+    // Check if we have data and canvas element
+    if (!this.pieChartRef?.nativeElement) {
+      console.warn('Canvas element not found');
       return;
     }
 
-    this.chartPercentage = {
-      expenses: +(expenses / total * 100).toFixed(1),
-      revenue: +(revenue / total * 100).toFixed(1)
-    };
-  }
+    const revenue = Number(this.summary?.totalRevenue) || 0;
+    const expenses = Number(this.summary?.totalExpenses) || 0;
+    const total = revenue + expenses;
 
-  getChartWidth(type: 'revenue' | 'expenses') {
-    return type === 'revenue' ? this.chartPercentage.revenue : this.chartPercentage.expenses;
+    if (total <= 0) {
+      console.warn('No data for chart');
+      return;
+    }
+
+    const ctx = this.pieChartRef.nativeElement.getContext('2d');
+    if (!ctx) {
+      console.error('Failed to get canvas context');
+      return;
+    }
+
+    try {
+      this.pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Revenue', 'Expenses'],
+          datasets: [{
+            data: [revenue, expenses],
+            backgroundColor: [
+              '#10B981', // Green for revenue
+              '#EF4444'  // Red for expenses
+            ],
+            borderColor: this.isDarkMode ? '#374151' : '#fff',
+            borderWidth: 2,
+            hoverOffset: 15
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: this.isDarkMode ? '#D1D5DB' : '#4B5563',
+                font: {
+                  size: 14,
+                  family: "'Inter', sans-serif"
+                },
+                padding: 20,
+                usePointStyle: true
+              }
+            },
+            tooltip: {
+              backgroundColor: this.isDarkMode ? '#1F2937' : '#fff',
+              titleColor: this.isDarkMode ? '#D1D5DB' : '#111827',
+              bodyColor: this.isDarkMode ? '#D1D5DB' : '#111827',
+              borderColor: this.isDarkMode ? '#4B5563' : '#E5E7EB',
+              borderWidth: 1,
+              callbacks: {
+                label: (context: any) => {
+                  const label = context.label || '';
+                  const value = context.parsed;
+                  const percentage = ((value / total) * 100).toFixed(1);
+                  return `${label}: $${value.toLocaleString()} (${percentage}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error creating chart:', error);
+    }
   }
 
   /* --------------------- MOCK DATA --------------------- */
   getMockTransactions(): Transaction[] {
     return [
-      { id: '1', amount: 150, type: 'expense', category: 'Food', description: 'Lunch', date: new Date(), userId: '1' },
-      { id: '2', amount: 200, type: 'expense', category: 'Transport', description: 'Bus Pass', date: new Date(), userId: '1' },
-      { id: '3', amount: 3000, type: 'revenue', category: 'Salary', description: 'Monthly Salary', date: new Date(), userId: '1' },
-      { id: '4', amount: 75, type: 'expense', category: 'Entertainment', description: 'Movies', date: new Date(), userId: '1' },
-      { id: '5', amount: 500, type: 'revenue', category: 'Freelance', description: 'Web Project', date: new Date(), userId: '1' }
+      { id: '1', amount: 150, type: 'expense', category: 'Food', description: 'Lunch', createdAt: new Date(), updatedAt: new Date() },
+      { id: '2', amount: 200, type: 'expense', category: 'Transport', description: 'Bus Pass', createdAt: new Date(), updatedAt: new Date() },
+      { id: '3', amount: 3000, type: 'revenue', category: 'Salary', description: 'Monthly Salary', createdAt: new Date(), updatedAt: new Date() },
+      { id: '4', amount: 75, type: 'expense', category: 'Entertainment', description: 'Movies', createdAt: new Date(), updatedAt: new Date() },
+      { id: '5', amount: 500, type: 'revenue', category: 'Freelance', description: 'Web Project', createdAt: new Date(), updatedAt: new Date() }
     ];
   }
 
@@ -137,10 +279,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return {
       totalExpenses: 425,
       totalRevenue: 3500,
+      expenseCount: 3,
+      revenueCount: 2,
       netAmount: 3075,
       period: this.selectedTimeFrame,
       currency: 'USD',
-      transactionCount: 5
     };
   }
 
@@ -154,20 +297,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
     ];
   }
 
-  formatCurrency(amount: number | null | undefined) {
+  formatCurrency(amount: number | null | undefined): string {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount ?? 0);
   }
 
-  getExpenseCategories() {
-    return this.categorySummary.filter(c => c.type === 'expense');
+  getExpenseCategories(): CategorySummary[] {
+    return this.categorySummary.filter((c: CategorySummary) => c.type === 'expense');
   }
 
-  getRevenueCategories() {
-    return this.categorySummary.filter(c => c.type === 'revenue');
+  getRevenueCategories(): CategorySummary[] {
+    return this.categorySummary.filter((c: CategorySummary) => c.type === 'revenue');
   }
 
-  formatDate(date: Date) {
+  formatDate(date: Date): string {
     return new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
+  showFullTransactions(): void {
+    this.router.navigate([`/transactions/${this.authService.getCurrentUser()?.id}`]);
+  }
 }

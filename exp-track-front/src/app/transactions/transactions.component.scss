@@ -2,6 +2,7 @@
 .transactions-container {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 20px;
 }
 
 .transactions-header {
@@ -172,7 +173,7 @@
   }
 }
 
-/* Modal Styles */
+/* Modal Styles - Fixed z-index and positioning */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -183,17 +184,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 10000;
+  padding: 20px;
+
+  // Ensure modal is always visible
+  &:not([hidden]) {
+    display: flex !important;
+  }
 }
 
 .modal-content {
   background: white;
   border-radius: 12px;
   padding: 0;
-  width: 90%;
+  width: 100%;
   max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
+  position: relative;
+  z-index: 10001;
 }
 
 .modal-header {
@@ -214,6 +223,7 @@
     font-size: 24px;
     cursor: pointer;
     color: #6b7280;
+    line-height: 1;
 
     &:hover {
       color: #111827;
@@ -241,6 +251,7 @@
       border: 1px solid #d1d5db;
       border-radius: 6px;
       font-size: 14px;
+      box-sizing: border-box;
 
       &:focus {
         outline: none;
@@ -332,6 +343,14 @@
 
     &:hover {
       background: #4b5563;
+    }
+  }
+
+  .modal-header {
+    border-bottom-color: #374151;
+
+    h2 {
+      color: #f9fafb;
     }
   }
 }

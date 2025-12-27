@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
+import { AuthService, User } from '../auth/auth';
 
 interface MenuItem {
   label: string;
@@ -17,23 +18,25 @@ interface MenuItem {
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent {
-  userId = '1'; // For now, use a fixed user ID
+  private currUser: User | null;
+  public menuItems: MenuItem[]
+  constructor(private router: Router, private authService: AuthService) {
 
-  menuItems: MenuItem[] = [
-    { label: 'Dashboard', icon: '📊', route: '/dashboard', isActive: false },
-    { label: 'Transactions', icon: '💳', route: '/transactions', isActive: false },
-    { label: 'Category Stats', icon: '📈', route: '/category-stats', isActive: false },
-    { label: 'Reports', icon: '📋', route: '/reports', isActive: false },
-    { label: 'Settings', icon: '⚙️', route: '/settings', isActive: false }
-  ];
+    this.currUser = this.authService.getCurrentUser()
+    this.menuItems = [
+      { label: 'Dashboard', icon: '📊', route: `/dashboard/${this.currUser?.id}`, isActive: false },
+      { label: 'Transactions', icon: '💳', route: `/transactions/${this.currUser?.id}`, isActive: false },
+      { label: 'Category Stats', icon: '📈', route: `/category-stats/${this.currUser?.id}`, isActive: false },
+      { label: 'Reports', icon: '📋', route: `/reports/${this.currUser?.id}`, isActive: false },
+      { label: 'Settings', icon: '⚙️', route: `/settings/${this.currUser?.id}`, isActive: false }
+    ];
 
-  constructor(private router: Router) {
     this.updateActiveState();
     this.router.events.subscribe(() => {
       this.updateActiveState();
     });
-  }
 
+  }
   navigateTo(route: string) {
     this.router.navigate([route]);
   }

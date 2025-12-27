@@ -1,4 +1,4 @@
-// category-stats.component.ts
+// category-stats.component.ts - Complete version with all methods
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -32,10 +32,6 @@ export class CategoryStatsComponent implements OnInit, OnDestroy {
 
   private themeSubscription!: Subscription;
 
-  // Chart data
-  expenseChartData: any = null;
-  revenueChartData: any = null;
-
   constructor(
     private transactionService: TransactionService,
     private themeService: ThemeService,
@@ -61,48 +57,14 @@ export class CategoryStatsComponent implements OnInit, OnDestroy {
     this.transactionService.getCategoryStats(this.selectedTimeFrame).subscribe({
       next: (data) => {
         this.stats = data;
-        this.prepareChartData();
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Error loading category stats:', error);
         this.stats = this.getMockData();
-        this.prepareChartData();
         this.isLoading = false;
       }
     });
-  }
-
-  prepareChartData() {
-    if (!this.stats) return;
-
-    // Prepare expense chart data
-    this.expenseChartData = {
-      labels: this.stats.expenseCategories.map(c => c.category),
-      datasets: [{
-        data: this.stats.expenseCategories.map(c => c.totalAmount),
-        backgroundColor: [
-          '#ef4444', '#dc2626', '#f97316', '#f59e0b',
-          '#eab308', '#84cc16', '#22c55e', '#10b981'
-        ],
-        borderWidth: 0,
-        hoverOffset: 15
-      }]
-    };
-
-    // Prepare revenue chart data
-    this.revenueChartData = {
-      labels: this.stats.revenueCategories.map(c => c.category),
-      datasets: [{
-        data: this.stats.revenueCategories.map(c => c.totalAmount),
-        backgroundColor: [
-          '#10b981', '#059669', '#0ea5e9', '#3b82f6',
-          '#6366f1', '#8b5cf6', '#a855f7', '#d946ef'
-        ],
-        borderWidth: 0,
-        hoverOffset: 15
-      }]
-    };
   }
 
   selectCategory(category: CategoryDetail) {
@@ -135,6 +97,49 @@ export class CategoryStatsComponent implements OnInit, OnDestroy {
     });
   }
 
+  // PIE CHART METHODS
+  getPieSlicePath(category: CategoryDetail, allCategories: CategoryDetail[], index: number): string {
+    const centerX = 100;
+    const centerY = 100;
+    const radius = 90;
+
+    // Calculate the start angle (sum of all previous percentages)
+    let startAngle = 0;
+    for (let i = 0; i < index; i++) {
+      startAngle += (allCategories[i].percentage / 100) * 360;
+    }
+
+    // Calculate the end angle
+    const endAngle = startAngle + (category.percentage / 100) * 360;
+
+    // Convert angles to radians
+    const startRad = (startAngle - 90) * (Math.PI / 180);
+    const endRad = (endAngle - 90) * (Math.PI / 180);
+
+    // Calculate the start and end points
+    const x1 = centerX + radius * Math.cos(startRad);
+    const y1 = centerY + radius * Math.sin(startRad);
+    const x2 = centerX + radius * Math.cos(endRad);
+    const y2 = centerY + radius * Math.sin(endRad);
+
+    // Determine if we need a large arc
+    const largeArc = (endAngle - startAngle) > 180 ? 1 : 0;
+
+    // Create the path
+    return `M ${centerX} ${centerY} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+  }
+
+  // BAR CHART METHODS
+  getBarHeight(amount: number, monthlyData: any[]): number {
+    if (!monthlyData || monthlyData.length === 0) return 0;
+
+    const maxAmount = Math.max(...monthlyData.map(m => m.amount));
+    if (maxAmount === 0) return 0;
+
+    return (amount / maxAmount) * 100;
+  }
+
+  // FORMATTING METHODS
   formatCurrency(amount: number): string {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -148,6 +153,7 @@ export class CategoryStatsComponent implements OnInit, OnDestroy {
     return `${percentage.toFixed(1)}%`;
   }
 
+  // ICON AND COLOR METHODS
   getCategoryIcon(category: string): string {
     const icons: { [key: string]: string } = {
       'Food': '🍔',
@@ -167,6 +173,37 @@ export class CategoryStatsComponent implements OnInit, OnDestroy {
     return icons[category] || '📊';
   }
 
+  getCategoryColor(category: string): string {
+    const colorMap: { [key: string]: string } = {
+      'Food': '#ef4444',
+      'Transport': '#f97316',
+      'Entertainment': '#f59e0b',
+      'Shopping': '#84cc16',
+      'Bills': '#10b981',
+      'Healthcare': '#0ea5e9',
+      'Education': '#3b82f6',
+      'Travel': '#8b5cf6',
+      'Salary': '#059669',
+      'Freelance': '#3b82f6',
+      'Investment': '#8b5cf6',
+      'Gift': '#d946ef',
+      'Other': '#6b7280'
+    };
+
+    return colorMap[category] || this.generateColorFromString(category);
+  }
+
+  private generateColorFromString(str: string): string {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    const colors = ['#ef4444', '#f97316', '#f59e0b', '#84cc16', '#10b981', '#0ea5e9', '#3b82f6', '#8b5cf6', '#a855f7', '#ec4899'];
+    return colors[Math.abs(hash) % colors.length];
+  }
+
+  // TREND METHODS
   getTrendIcon(trend: 'up' | 'down' | 'stable'): string {
     return {
       'up': '📈',
@@ -183,8 +220,8 @@ export class CategoryStatsComponent implements OnInit, OnDestroy {
     }[trend];
   }
 
+  // MOCK DATA
   private getMockData(): CategoryStatsResponse {
-    // Mock data for development
     return {
       expenseCategories: [
         {
@@ -263,11 +300,26 @@ export class CategoryStatsComponent implements OnInit, OnDestroy {
             { month: 'Feb', amount: 720, transactionCount: 3 },
             { month: 'Mar', amount: 800, transactionCount: 3 }
           ]
+        },
+        {
+          category: 'Investment',
+          type: 'revenue',
+          totalAmount: 445.00,
+          transactionCount: 2,
+          averageAmount: 222.50,
+          percentage: 7.5,
+          trend: 'up',
+          trendPercentage: 10.5,
+          monthlyData: [
+            { month: 'Jan', amount: 200, transactionCount: 1 },
+            { month: 'Feb', amount: 220, transactionCount: 1 },
+            { month: 'Mar', amount: 245, transactionCount: 2 }
+          ]
         }
       ],
       timeFrame: this.selectedTimeFrame,
       summary: {
-        totalExpenses: 1386.75,
+        totalExpenses: 1051.50,
         totalRevenue: 5745.00,
         averageTransaction: 85.42,
         mostSpentCategory: 'Food',
@@ -275,37 +327,7 @@ export class CategoryStatsComponent implements OnInit, OnDestroy {
       }
     };
   }
-  // Add this method to category-stats.component.ts
-  getCategoryColor(category: string): string {
-    const colorMap: { [key: string]: string } = {
-      'Food': '#ef4444',
-      'Transport': '#f97316',
-      'Entertainment': '#f59e0b',
-      'Shopping': '#84cc16',
-      'Bills': '#10b981',
-      'Healthcare': '#0ea5e9',
-      'Education': '#3b82f6',
-      'Travel': '#8b5cf6',
-      'Salary': '#059669',
-      'Freelance': '#3b82f6',
-      'Investment': '#8b5cf6',
-      'Gift': '#d946ef',
-      'Other': '#6b7280'
-    };
 
-    return colorMap[category] || this.generateColorFromString(category);
-  }
-
-  private generateColorFromString(str: string): string {
-    // Generate a consistent color from string hash
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    const colors = ['#ef4444', '#f97316', '#f59e0b', '#84cc16', '#10b981', '#0ea5e9', '#3b82f6', '#8b5cf6', '#a855f7', '#ec4899'];
-    return colors[Math.abs(hash) % colors.length];
-  }
 
   ngOnDestroy() {
     if (this.themeSubscription) {

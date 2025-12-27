@@ -5,7 +5,7 @@
   </div>
 
   <ul class="sidebar-menu">
-    <li *ngFor="let item of menuItems"
+    <li *ngFor="let item of this.menuItems"
         class="menu-item"
         [class.active]="item.isActive"
         (click)="navigateTo(item.route)">
