@@ -1,3 +1,6 @@
 [submodule "exptrack-backend"]
 	path = exptrack-backend
 	url = https://github.com/AzizMejbri/exptrack-backend
+[submodule "exptrack-frontend"]
+	path = exptrack-frontend
+	url = https://github.com/AzizMejbri/exptrack-frontend
