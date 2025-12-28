@@ -46,6 +46,14 @@ docker-compose.yml linguist-language=YAML
 *.md linguist-language=Markdown
 *.mdx linguist-language=Markdown
 
+# R
+*.R  linguist-language=R 
+*.r  linguist-language=R 
+
+
+# csv
+*.csv linguist-vendored
+
 # =================== EXCLUDE GENERATED/VENDORED FILES ===================
 
 # Java build outputs
