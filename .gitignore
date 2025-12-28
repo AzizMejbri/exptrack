@@ -3,6 +3,8 @@ notes.md
 exp-track-app/run_db.sh
 exp-track-app/target
 access_db.sh
+db/generated_samples/*
+db/users.json
 
 # ==================== DATABASE ====================
 
