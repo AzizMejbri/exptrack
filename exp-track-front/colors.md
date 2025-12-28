@@ -1,0 +1,8 @@
+Primary: #0ea5e9 (Sky blue)
+Secondary: #14b8a6 (Teal)
+Accent: #8b5cf6 (Violet)
+Background: #f1f5f9 (Light slate)
+Surface: #ffffff (White)
+Text: #334155 (Slate gray)
+Positive: #22c55e (Success green)
+Negative: #f97316 (Expense orange)

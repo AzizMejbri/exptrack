@@ -1,0 +1,3 @@
+[submodule "exptrack-backend"]
+	path = exptrack-backend
+	url = https://github.com/AzizMejbri/exptrack-backend
