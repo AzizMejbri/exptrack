@@ -22,7 +22,7 @@ services:
 
   backend:
     build:
-      context: ./exp-track-app
+      context: ./exptrack-backend
       dockerfile: dockerfile
     container_name: exptrack-backend
     restart: unless-stopped

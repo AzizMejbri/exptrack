@@ -20,7 +20,7 @@ sleep 5
 docker-compose ps
 
 echo "✅ Application started!"
-echo "🔗 Backend: http://localhost:8080"
+echo "🔗 Backend: https://localhost:8443"
 echo "🗄️  Database: localhost:5432"
 echo ""
 echo "📊 View logs: docker-compose logs -f"
