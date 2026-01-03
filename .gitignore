@@ -117,3 +117,8 @@ log/
 
 exp-track-app/ 
 exp-track-front/
+
+*.crt 
+*.key 
+*.srl 
+*.p12
