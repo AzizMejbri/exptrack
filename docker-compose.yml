@@ -44,6 +44,23 @@ services:
         condition: service_healthy
     networks:
       - exptrack-network
+  
+  frontend:
+    build:
+      context: ./exptrack-frontend
+      dockerfile: dockerfile
+    container_name: exptrack-frontend
+    restart: unless-stopped
+    environment:
+      FRONTEND_PORT: ${FRONTEND_PORT}
+      SSL_CERT: ${FRONTEND_SSL_CERT}
+      SSL_KEY: ${FRONTEND_SSL_KEY}
+    ports:
+      - "4200:${FRONTEND_PORT}"  
+    networks:
+      - exptrack-network
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:
