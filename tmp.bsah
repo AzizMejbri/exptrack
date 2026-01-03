@@ -1,0 +1,4 @@
+
+for f in screenshots/*.png; do
+  echo "![Screenshot]($f)"
+done
