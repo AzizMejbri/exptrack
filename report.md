@@ -1,24 +1,52 @@
 # Exptrackz Project Report
+# Mohamed Aziz Mejbri
+
+> French version will soon be generated in reportfr.md
 
 ## Summary / Abstract
 Exptrackz is a web-based expense tracking application designed to help users manage their personal finances efficiently. The application allows users to authenticate securely, log expenses and revenues, visualize financial trends through charts and graphs, receive notifications when budgets are exceeded, and generate reports in multiple formats including PDF, CSV, Markdown, JSON, and HTML. The main objectives of the project were to provide an intuitive and interactive platform for personal finance management, automate financial monitoring, and offer flexible reporting tools. The results include a fully functional web application that successfully meets the user's financial tracking and reporting needs.
 
 ---
-
 ## Index
+
 1. [Introduction](#introduction)  
 2. [Needs Analysis](#needs-analysis)  
    2.1 [User Description](#user-description)  
    2.2 [Expected Functionalities](#expected-functionalities)  
    2.3 [Technical Constraints](#technical-constraints)  
-3. [Specifications (Cahier de Charge)](#specifications-cahier-de-charge)  
+
+3. [Specifications](#specifications-cahier-de-charge)  
    3.1 [Minimal Functionalities](#minimal-functionalities)  
    3.2 [Optional Functionalities](#optional-functionalities)  
    3.3 [Use Case Diagram](#use-case-diagram)  
+
 4. [Conception and Architecture](#conception-and-architecture)  
    4.1 [Technical Choices](#technical-choices)  
    4.2 [System Architecture](#system-architecture)  
 
+5. [Development and Realisation](#development-and-realisation)  
+   5.1 [Frontend Modules](#frontend-modules)  
+   5.2 [Backend Modules](#backend-modules)  
+   5.3 [Screenshots](#screenshots)  
+   5.4 [Code Snippets](#code-snippets)  
+
+6. [Tests and Validation](#tests-and-validation)  
+
+7. [Conclusions and Perspective](#conclusions-and-perspective)  
+   7.1 [Conclusions](#conclusions)  
+   7.2 [Perspectives and Improvements](#perspectives-and-improvements)  
+   7.3 [Required Teachings](#required-teachings)  
+
+8. [Bibliography / References](#bibliography-%2F-references)  
+   8.1 [TypeScript](#typescript)  
+   8.2 [Angular](#angular)  
+   8.3 [PostgreSQL](#postgresql)  
+   8.4 [Docker and Docker Compose](#docker-and-docker-compose)  
+   8.5 [Git](#git)  
+   8.6 [Java](#java)  
+   8.7 [Spring Boot](#spring-boot)  
+   8.8 [Swagger / OpenAPI for Spring Boot](#swagger-%2F-openapi-for-spring-boot)  
+   8.9 [Server-Client Website Design](#server-client-website-design)  
 ---
 
 ## Introduction
@@ -79,29 +107,69 @@ The primary users of Exptrackz are individuals seeking better control over their
 - Filtering and categorization of expenses and revenues.  
 
 ### Use Case Diagram
-```mermaid
-%% Exptrackz Use Case Diagram
-usecaseDiagram
-    actor User
-    User --> (Login/Register)
-    User --> (Add Expense)
-    User --> (Add Revenue)
-    User --> (View Dashboard)
-    User --> (Set Budget)
-    User --> (Receive Notifications)
-    User --> (Generate Reports)
-    User --> (View Charts & Trends)
-```mermaid 
-graph TD
-    User((Utilisateur))
-    User --> Login[Connexion/Inscription]
-    User --> AddExpense[Ajouter Dépense]
-    User --> AddRevenue[Ajouter Revenu]
-    User --> ViewDashboard[Voir Tableau de Bord]
-    User --> SetBudget[Définir Budget]
-    User --> ReceiveNotif[Recevoir Notifications]
-    User --> GenerateReports[Générer Rapports]
-    User --> ViewCharts[Voir Graphiques]
+```plantuml
+
+@startuml
+left to right direction
+
+
+skinparam backgroundColor #0d1117
+skinparam defaultTextColor white
+skinparam shadowing false
+skinparam ArrowColor white
+skinparam ArrowThickness 2
+skinparam LineThickness 1
+
+skinparam Actor {
+  BackgroundColor #0d1117
+  BorderColor white
+  FontColor white
+}
+
+skinparam UseCase {
+  BackgroundColor #0d1117
+  BorderColor white
+  FontColor white
+}
+
+skinparam Rectangle {
+  BackgroundColor #0d1117
+  BorderColor white
+  FontColor white
+}
+actor Utilisateur 
+
+rectangle Exptrackz {
+  (Connexion / Inscription) as Login
+  (Ajouter Dépense)
+  (Ajouter Revenu)
+  (Voir Tableau de Bord)
+  (Définir Budget)
+  (Recevoir Notifications)
+  (Générer Rapports)
+  (Voir Graphiques)
+}
+
+Utilisateur --> (Ajouter Dépense)
+Utilisateur --> (Ajouter Revenu)
+Utilisateur --> (Voir Tableau de Bord)
+Utilisateur --> (Définir Budget)
+Utilisateur --> (Recevoir Notifications)
+Utilisateur --> (Générer Rapports)
+Utilisateur --> (Voir Graphiques)
+
+
+
+(Ajouter Dépense)        ..> (Login): <>
+(Ajouter Revenu)         ..> (Login): <>
+(Voir Tableau de Bord)   ..> (Login): <>
+(Définir Budget)         ..> (Login): <>
+(Recevoir Notifications) ..> (Login): <>
+(Générer Rapports)       ..> (Login): <>
+(Voir Graphiques)        ..> (Login): <>
+
+
+@enduml
 ```
 
 ## Conception and Architecture
@@ -288,7 +356,7 @@ sequenceDiagram
 
 
 
-## Development and realisation
+## Development and Realisation
 
 
 ### Developped modules
@@ -420,6 +488,8 @@ The frontend modules focus on **user interface, data visualization, and interact
 ![Screenshot](screenshots/Screenshot_03-Jan_23-32-00_7219.png)
 ![Screenshot](screenshots/Screenshot_03-Jan_23-32-06_7577.png)
 
+
+### Snippets 
 
 1. Backend – Transaction Model & Inheritance
 
@@ -1332,7 +1402,7 @@ Despite the lack of formalized unit tests, the combination of manual testing, da
 
 
 
-## Conclusions and Perspectives
+## Conclusions and Perspective
 
 ### Conclusions
 The Exptrackz project successfully achieved its objective of providing a **full-featured expense tracking application**. Users can securely authenticate, log expenses and revenues, visualize financial trends through charts, receive notifications for budget limits, and generate detailed reports in multiple formats. The project demonstrated the effective integration of a **Spring Boot backend, Angular frontend, and PostgreSQL database**, along with containerized deployment using Docker and Docker Compose. Overall, the application meets the intended functionality, maintains data integrity, and provides a solid foundation for future enhancements.
@@ -1357,33 +1427,33 @@ The project provided valuable practical experience, bridging the gap between aca
 
 ## Bibliography / References
 
-### TypeScript
+#### TypeScript
 - Official Documentation: [https://www.typescriptlang.org/docs/](https://www.typescriptlang.org/docs/)
 
-### Angular
+#### Angular
 - Official Angular Documentation: [https://angular.io/docs](https://angular.io/docs)
 
-### PostgreSQL
+#### PostgreSQL
 - Official Documentation: [https://www.postgresql.org/docs/](https://www.postgresql.org/docs/)
 
-### Docker and Docker Compose
+#### Docker and Docker Compose
 - Official Docker Documentation: [https://docs.docker.com/](https://docs.docker.com/)
 
-### Git
+#### Git
 - Official Git Documentation: [https://git-scm.com/doc](https://git-scm.com/doc)
 
-### Java
+#### Java
 - Official Java Documentation: [https://docs.oracle.com/en/java/](https://docs.oracle.com/en/java/)
 
-### Spring Boot
+#### Spring Boot
 - Official Spring Boot Documentation: [https://docs.spring.io/spring-boot/docs/current/reference/html/](https://docs.spring.io/spring-boot/docs/current/reference/html/)
 
-### Swagger / OpenAPI for Spring Boot
+#### Swagger / OpenAPI for Spring Boot
 - Official Springdoc OpenAPI Documentation: [https://springdoc.org/](https://springdoc.org/)
 - *OpenAPI Specification* Documentation: [https://swagger.io/specification/](https://swagger.io/specification/)
 
-### Server-Client Website Design
+#### Server-Client Website Design
 - MDN Web Docs – Client-Server Architecture: [https://developer.mozilla.org/en-US/docs/Learn/Server-side](https://developer.mozilla.org/en-US/docs/Learn/Server-side)
 
-for more information, visit the following github repository: [AzizMejbri/exptrack](https://github.com/AzizMejbri/exptrack)
+
 
