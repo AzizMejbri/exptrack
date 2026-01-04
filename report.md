@@ -461,30 +461,53 @@ The frontend modules focus on **user interface, data visualization, and interact
 
 ### Screenshots
 
+#### Login Component:
 ![Screenshot](screenshots/Screenshot_03-Jan_23-23-57_257.png)
+#### Login Password Restriction:
 ![Screenshot](screenshots/Screenshot_03-Jan_23-24-17_22881.png)
+#### Client Side Email format checking:
 ![Screenshot](screenshots/Screenshot_03-Jan_23-24-30_3481.png)
+#### Authentication Failure:
 ![Screenshot](screenshots/Screenshot_03-Jan_23-25-06_25693.png)
+#### Signup Component:
 ![Screenshot](screenshots/Screenshot_03-Jan_23-25-15_22794.png)
+#### Dashboard Component:
 ![Screenshot](screenshots/Screenshot_03-Jan_23-25-36_13250.png)
+#### Dark Mode Support:
 ![Screenshot](screenshots/Screenshot_03-Jan_23-25-43_5310.png)
+#### Logout Component:
 ![Screenshot](screenshots/Screenshot_03-Jan_23-25-57_10878.png)
+#### Transactions CRUD Component:
 ![Screenshot](screenshots/Screenshot_03-Jan_23-26-11_13300.png)
+#### Transaction Creation Component:
 ![Screenshot](screenshots/Screenshot_03-Jan_23-26-20_2393.png)
-![Screenshot](screenshots/Screenshot_03-Jan_23-26-36_15393.png)
+#### Notifications When the Threshold is reached:
 ![Screenshot](screenshots/Screenshot_03-Jan_23-26-59_20718.png)
+#### Transaction Creation Success:
 ![Screenshot](screenshots/Screenshot_03-Jan_23-27-31_16676.png)
+#### Category Statistics Component (List Mode):
+![Screenshot](screenshots/Screenshot_03-Jan_23-26-36_15393.png)
+#### Category Statistics Component (Chart Mode):
 ![Screenshot](screenshots/Screenshot_03-Jan_23-28-34_13880.png)
+#### Financial Report Component (Trend Analysis Section):
 ![Screenshot](screenshots/Screenshot_03-Jan_23-28-50_21200.png)
-![Screenshot](screenshots/Screenshot_03-Jan_23-28-56_7936.png)
+#### Financial Report Component (Custom Report Generation Section):
 ![Screenshot](screenshots/Screenshot_03-Jan_23-29-03_177.png)
+#### Supported exporting File Formats :
 ![Screenshot](screenshots/Screenshot_03-Jan_23-29-09_16080.png)
+#### Exported Markdown file:
 ![Screenshot](screenshots/Screenshot_03-Jan_23-30-36_10217.png)
+#### Exported JSON file:
 ![Screenshot](screenshots/Screenshot_03-Jan_23-30-58_28552.png)
+#### Exported HTML file:
 ![Screenshot](screenshots/Screenshot_03-Jan_23-31-13_7791.png)
+#### Exported PDF file:
 ![Screenshot](screenshots/Screenshot_03-Jan_23-31-26_28529.png)
+#### Settings Component:
+##### General Section:
 ![Screenshot](screenshots/Screenshot_03-Jan_23-31-47_31221.png)
 ![Screenshot](screenshots/Screenshot_03-Jan_23-31-51_8945.png)
+##### Budget Section:
 ![Screenshot](screenshots/Screenshot_03-Jan_23-32-00_7219.png)
 ![Screenshot](screenshots/Screenshot_03-Jan_23-32-06_7577.png)
 
@@ -493,9 +516,9 @@ The frontend modules focus on **user interface, data visualization, and interact
 
 1. Backend – Transaction Model & Inheritance
 
-- Shows your OO design and the use of JPA/Hibernate inheritance.
+- OO design and the use of JPA/Hibernate inheritance.
 
-- Demonstrates your database structure for expenses and revenues.
+- database structure for expenses and revenues.
 
 ```java 
 package com.example.exptrack.models;
@@ -627,7 +650,7 @@ public class Expense extends Transaction {
 ```
 
 2. Backend – Transaction Service Method
-- Shows business logic separation, user validation, and interaction with the repository.. 
+- Shows business logic separation, user validation, and interaction with the repository. 
 
 ```Java
 package com.example.exptrack.services;
