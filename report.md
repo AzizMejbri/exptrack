@@ -172,7 +172,7 @@ User --> (View Charts)
 
 
 > If the plantUML script is not rendering the use case diagram then:
-> [useCaseDiagram](./assets/images/useCaseDiagram.png)
+> ![useCaseDiagram](./assets/images/useCaseDiagram.png)
 
 ## Conception and Architecture
 ### Technical Choices
