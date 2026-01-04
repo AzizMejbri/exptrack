@@ -1411,7 +1411,7 @@ export class AuthGuard implements CanActivate {
 ```
 
 ### Endpoint Documentation
-[This is a static swagger endpoint documentation, visit it for more information](https://github.com/AzizMejbri/exptrack/blob/master/assets/swagger-ui/README.md)
+[This is a static swagger endpoint documentation, visit it for more information](https://github.com/AzizMejbri/exptrack/blob/master/assets/swagger-ui/README.md)<br>
 [If you do not want to clone and build yourself, Here is the same static page
 deployed with the help of Github pages](https://azizmejbri.github.io/exptrack/)
 
