@@ -137,36 +137,34 @@ skinparam Rectangle {
   BorderColor white
   FontColor white
 }
-actor Utilisateur 
+actor User 
 
 rectangle Exptrackz {
-  (Connexion / Inscription) as Login
-  (Ajouter Dépense)
-  (Ajouter Revenu)
-  (Voir Tableau de Bord)
-  (Définir Budget)
-  (Recevoir Notifications)
-  (Générer Rapports)
-  (Voir Graphiques)
+  (Login / Registration) as Login
+  (Add Expense)
+  (Add Income)
+  (View Dashboard)
+  (Set Budget)
+  (Receive Notifications)
+  (Generate Reports)
+  (View Charts)
 }
 
-Utilisateur --> (Ajouter Dépense)
-Utilisateur --> (Ajouter Revenu)
-Utilisateur --> (Voir Tableau de Bord)
-Utilisateur --> (Définir Budget)
-Utilisateur --> (Recevoir Notifications)
-Utilisateur --> (Générer Rapports)
-Utilisateur --> (Voir Graphiques)
+User --> (Add Expense)          
+User --> (Add Income)           
+User --> (View Dashboard)           
+User --> (Set Budget)               
+User --> (Receive Notifications)
+User --> (Generate Reports)         
+User --> (View Charts)                  
 
-
-
-(Ajouter Dépense)        ..> (Login): <>
-(Ajouter Revenu)         ..> (Login): <>
-(Voir Tableau de Bord)   ..> (Login): <>
-(Définir Budget)         ..> (Login): <>
-(Recevoir Notifications) ..> (Login): <>
-(Générer Rapports)       ..> (Login): <>
-(Voir Graphiques)        ..> (Login): <>
+(Add Expense)           ..> (Login): <>
+(Add Income)            ..> (Login): <>
+(View Dashboard)        ..> (Login): <> 
+(Set Budget)            ..> (Login): <> 
+(Receive Notifications) ..> (Login): <>
+(Generate Reports)      ..> (Login): <> 
+(View Charts)           ..> (Login): <> 
 
 
 @enduml
