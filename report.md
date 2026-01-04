@@ -29,6 +29,7 @@ Exptrackz is a web-based expense tracking application designed to help users man
    5.2 [Backend Modules](#backend-modules)  
    5.3 [Screenshots](#screenshots)  
    5.4 [Code Snippets](#code-snippets)  
+   5.5 [Endpoint Documentation](#endpoint-documentation)
 
 6. [Tests and Validation](#tests-and-validation)  
 
@@ -1408,6 +1409,9 @@ export class AuthGuard implements CanActivate {
   }
 }
 ```
+
+### Endpoint Documentation
+[this is a static swagger-ui endpoint documentation, visit it for more information](https://github.com/AzizMejbri/exptrack/blob/master/assets/images/useCaseDiagram.png)
 
 
 ## Tests and Validation
