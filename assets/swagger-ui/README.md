@@ -1,5 +1,6 @@
 In order to render the static swagger-ui into the browser you must have an http
 server running, so:
+
 1. If you don't have the resources yet, clone them
 
 ```bash
