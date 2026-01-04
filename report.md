@@ -1,7 +1,7 @@
 # Exptrackz Project Report
 # Mohamed Aziz Mejbri
 
-> French version will soon be generated in reportfr.md
+> French version will soon be generated in report-fr.md
 
 ## Summary / Abstract
 Exptrackz is a web-based expense tracking application designed to help users manage their personal finances efficiently. The application allows users to authenticate securely, log expenses and revenues, visualize financial trends through charts and graphs, receive notifications when budgets are exceeded, and generate reports in multiple formats including PDF, CSV, Markdown, JSON, and HTML. The main objectives of the project were to provide an intuitive and interactive platform for personal finance management, automate financial monitoring, and offer flexible reporting tools. The results include a fully functional web application that successfully meets the user's financial tracking and reporting needs.
