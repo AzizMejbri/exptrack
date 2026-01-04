@@ -173,5 +173,6 @@ This project is licensed under the MIT License. More on that [here](https://gith
 - The backend was deployed on render, so it might take time for loading
   initially if it was left unused for some time, and the limitations imposed by
   render was 512MB of memory and 0.15 CPU, so there might be performance issues
+- Endpoints are documented [here](https://azizmejbri.github.io/exptrack/)
 - If you run locally, the endpoints documentation with [swagger-ui](https://github.com/AzizMejbri/exptrack/blob/master/assets/swagger-ui/) will be
   generated in `https://localhost:{your backend port}/swagger-ui/index.html#/`
